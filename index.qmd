@@ -133,7 +133,7 @@ Due to the data limitations for the current financial year, data from the second
 
 As part of data processing, variables names were altered to aid in the coding process. Variable types were changed to the appropriate type (continuous or character).
 
-[Missing Values]{.underline}: Included in each dataset was '2022 Passengers', a variable which compares the amount of domestic passengers each airport sees in 2022. A missing value or a value of 0 indicate these airports don't provide commercial domestic flights, so I'm removing missing values and values of 0 because the corresponding airports wouldn't be ones I would fly from.
+[Missing Values]{.underline}: Included in each dataset was '2022 Passengers', a variable which compares the amount of domestic passengers each airport sees in 2022. A missing value or a value of 0 indicate these airports don't provide commercial domestic flights, so entries with these values were removed since they would not be airports the consumer is choosing from.
 
 ```{r, include=FALSE}
 
@@ -202,7 +202,7 @@ trx$lon = as.numeric(as.character(trx$lon))
 
 [Coordinate data]{.underline}: For the purpose of additional analysis, coordinate data was taken from [The Humanitarian Data Exchange](https://data.humdata.org/dataset/ourairports-usa?) which compiled a dataset of longitude and latitude values for 508 major US airports. This coordinate dataset was merged with the BTS datasets.
 
-[Validation]{.underline}: Cross-validation was done by comparing the inflation adjusted fare variable for each year (Adjusted_Avg_Fare_Q2) provided originally with my dataset with an actual dollar to dollar conversion between that year and 2023.
+[Validation]{.underline}: Cross-validation was done by comparing the inflation adjusted fare variable for each year (Adjusted_Avg_Fare_Q2) provided originally with my dataset with an dollar to dollar conversion between that year and 2023.
 
 Conversions:
 
@@ -268,7 +268,7 @@ m1 %>%
   
 ```
 
-### State with Highest Average Airfare in  2003
+### State with Highest Average Airfare in 2003
 
 ```{r}
  m2 <- trx %>%
@@ -285,7 +285,7 @@ m1 %>%
    slice(1)
 ```
 
-### State with Highest Average Airfare in  2013
+### State with Highest Average Airfare in 2013
 
 ```{r}
 m3 <- trx %>%
@@ -304,7 +304,7 @@ m3 %>%
  
 ```
 
-### State with Highest Average Airfare in  2023
+### State with Highest Average Airfare in 2023
 
 ```{r}
  m4 <-trx %>%
@@ -363,7 +363,7 @@ west %>%
 
 ```
 
-As the Passenger Rank decreases, broadly speaking so does the cost of the average inflation adjusted flight there in the West. Additionally, compared to previous years, 2023 fares range lower than the fares from the years prior, excluding a few outliers in the lower passenger rank region of the graph.
+As the Passenger Rank decreases, broadly speaking so does the cost of the average inflation adjusted flight in the West. Additionally, compared to previous years, 2023 fares range lower than the fares from the years prior, excluding a few outliers in the lower passenger rank region of the graph.
 
 ### Passenger Rank vs Inflation Adjusted fare in the East
 
@@ -434,13 +434,11 @@ LAX.BOS %>%
 278.577	+ 369.449	
 ```
 
-It looks like on average, I would be paying \$648 more for a round trip in 1993 when comparing inflation adjusted rates. So it looks like, at least comparing the years that I did, I actually have it better off with what I pay now compared to what I would be paying in 1993.
-
-This is however limited scope--\> I only looked at one quarter and across 4 interrupted time points.
+On average, I would be paying \$648 more for a round trip in 1993 when comparing inflation adjusted rates. So it looks like, at least comparing the years that I did, I actually have it better off with what I pay now compared to what I would be paying in 1993.
 
 ## [Conclusion]{.underline}
 
-It looks like if we're just looking at the dollar amount, yes I spend slightly more in 2023 than what people spent for the average round trip from BOS to LAX in previous years, primarily thanks to the rising cost of a ticket out of LAX. However, in inflation adjusted dollars (which is more relevant, even though it doesn't feel any better) I am actually spending less. [So in conclusion, I am **not** spending more in relative 2023 dollars than anyone else has every spent before for a round trip between LAX and Boston.]{.underline}
+It looks like if we're just looking at the dollar amount, yes I spend slightly more in 2023 than what people spent for the average round trip from BOS to LAX in previous years, primarily thanks to the rising cost of a ticket out of LAX. However, in inflation adjusted dollars (which is more relevant, even though it doesn't feel any better) I am actually spending less. [So in conclusion, I am **not** spending more in relative 2023 dollars than anyone else has every spent before for a round trip between LAX and Boston.]{.underline} The above study does have significant limitations, namely that limitations in man-power limit our analysis to 4 timepoints separated by a decade. Due to this, this analysis definitely misses more acute variation in the dataset, and additionally does not account for the remaining financial quarters of the year. However, limited though it may be, it does provide a bit of assurance to those of us purchasing airfare.
 
 ## Cost Map
 
