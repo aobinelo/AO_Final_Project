@@ -4,6 +4,8 @@ project:
 website:
   title: "AO_Final_Project"
   navbar:
+    background: secondary
+    foreground: primary
     left:
       - href: index.qmd
         text: Home
@@ -13,10 +15,18 @@ website:
         
 
 format:
+
   html:
-    theme: cosmo
+    theme: 
+      light: flatly
+      dark: darkly
     css: styles.css
     toc: true
+    linkcolor: "blue"
+    backgroundcolor: hsl(84% 50% 100%)
+    fontcolor: black
+    mainfont: monospace
+    
 
 editor: visual
 
