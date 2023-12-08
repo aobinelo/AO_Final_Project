@@ -1,0 +1,293 @@
+---
+title: "Full Code"
+---
+
+```{r}
+library(dplyr)
+library(data.table)
+library(tidyverse)
+library(ggplot2)
+library(readxl)
+
+set1 <- read_excel('1993f.xls')
+set2 <- read_excel('2003f.xls')
+set3 <-read_excel('2013f.xls')
+set4 <- read_excel('2023f.xls')
+
+names(set1) <- set1[1,] # the data loaded with "header" included as data, so fixing that
+set1 <- set1[-1,]
+
+names(set2) <- set2[1,] 
+set2 <- set2[-1,]
+
+names(set3) <- set3[1,] 
+set3 <- set3[-1,]
+
+names(set4) <- set4[1,] 
+set4 <- set4[-1,]
+
+names(set1)[names(set1) == "Average Fare ($)"] <- "Avg_1993"
+colnames(set1)[7]<- "Adjusted_Avg_Fare_Q2_1993"
+colnames(set1)[2]<- "Airport"
+colnames(set1)[1]<- "PassRank_1993"
+colnames(set1)[8]<- "_1993v2022_Passengers"
+
+names(set2)[names(set2) == "Average Fare ($)"] <- "Avg_2003"
+colnames(set2)[7]<- "Adjusted_Avg_Fare_Q2_2003"
+colnames(set2)[2]<- "Airport"
+colnames(set2)[1]<- "Pass_Rank_2003"
+colnames(set2)[8]<- "_2003v2022_Passengers"
+
+names(set3)[names(set3) == "Average Fare ($)"] <- "Avg_2013"
+colnames(set3)[7]<- "Adjusted_Avg_Fare_Q2_2013"
+colnames(set3)[2]<- "Airport"
+colnames(set3)[1]<- "Pass_Rank_2013"
+colnames(set3)[8]<- "_2013v2022_Passengers"
+
+names(set4)[names(set4) == "Average Fare ($)"] <- "Avg_2023"
+colnames(set4)[7]<- "Adjusted_Avg_Fare_Q2_2023"
+colnames(set4)[2]<- "Airport"
+colnames(set4)[1]<- "Pass_Rank_2023"
+colnames(set4)[8]<- "_2023v2022_Passengers"
+
+
+# Filter out records with missing or 0 values in '_1993v2022_Passengers'
+set1 <- set1[complete.cases(set1$`_1993v2022_Passengers`) & set1$`_1993v2022_Passengers` != 0, ]
+
+# Filter out records with missing or 0 values in '_2003v2022_Passengers'
+set2 <- set2[complete.cases(set2$`_2003v2022_Passengers`) & set2$`_2003v2022_Passengers` != 0, ]
+
+# Filter out records with missing or 0 values in '_2013v2022_Passengers'
+set3 <- set3[complete.cases(set3$`_2013v2022_Passengers`) & set3$`_2013v2022_Passengers` != 0, ]
+
+# Filter out records with missing or 0 values in '_2023v2022_Passengers'
+set4 <- set4[complete.cases(set4$`_2023v2022_Passengers`) & set4$`_2023v2022_Passengers` != 0, ]
+
+
+trx1 <- merge(set1, set2, by=c('Airport', 'Airport Name', 'City Name', 'State Name'))
+dim(trx1)
+
+trx2 <- merge(set3, set4, by=c('Airport', 'Airport Name', 'City Name', 'State Name'))
+dim(trx2)
+
+trx <- merge(trx1, trx2, by=c('Airport', 'Airport Name', 'City Name', 'State Name'))
+
+#Change Variable TYpe
+
+trx$PassRank_1993 = as.numeric(as.character(trx$PassRank_1993))
+trx$Adjusted_Avg_Fare_Q2_1993 = as.numeric(as.character(trx$Adjusted_Avg_Fare_Q2_1993))
+trx$Pass_Rank_2003 = as.numeric(as.character(trx$Pass_Rank_2003))
+trx$Adjusted_Avg_Fare_Q2_2003 = as.numeric(as.character(trx$Adjusted_Avg_Fare_Q2_2003))
+
+trx$Pass_Rank_2013 = as.numeric(as.character(trx$Pass_Rank_2013))
+trx$Adjusted_Avg_Fare_Q2_2013 = as.numeric(as.character(trx$Adjusted_Avg_Fare_Q2_2013))
+trx$Pass_Rank_2023 = as.numeric(as.character(trx$Pass_Rank_2023))
+trx$Adjusted_Avg_Fare_Q2_2023 = as.numeric(as.character(trx$Adjusted_Avg_Fare_Q2_2023))
+
+trx$Avg_1993 = as.numeric(as.character(trx$Avg_1993))
+trx$Avg_2003 = as.numeric(as.character(trx$Avg_2003))
+trx$Avg_2013 = as.numeric(as.character(trx$Avg_2013))
+trx$Avg_2023 = as.numeric(as.character(trx$Avg_2023))
+
+#Add Geographic Data
+library(purrr)
+trx<-modify_if(trx, ~is.numeric(.), ~round(., 3))
+
+
+trx <- na.omit(trx)
+
+airports <- read_csv('us-airports.csv')
+
+gps <- airports %>% 
+  select(local_code, latitude_deg, longitude_deg)
+
+names(gps) <- gps[1,] 
+gps <- gps[-1,]
+colnames(gps)[1]<- "Airport"
+colnames(gps)[2]<- "lat"
+colnames(gps)[3]<- "lon"
+
+
+trx <- merge(trx, gps, by=c('Airport'))
+
+trx <- trx %>% drop_na(`Airport Name`) #drop rows missing aiport name (from og trx)'
+
+trx$lat = as.numeric(as.character(trx$lat))
+trx$lon = as.numeric(as.character(trx$lon))
+
+#Check Dataset
+check <- trx %>% 
+  select(Avg_1993, Avg_2003, Avg_2013, Avg_2023) %>% 
+  mutate(check.adj.93 = (Avg_1993) *2.13,
+                  check.adj.03 = (Avg_2003) * 1.67,
+                  check.adj.13 = (Avg_2013) * 1.32,
+            check.adj.23 = (Avg_2023)* 1)
+
+trx <- merge(trx, check, by=c('Avg_1993', 'Avg_2003', 'Avg_2013', 'Avg_2023'))
+
+
+trx %>% 
+  select(Adjusted_Avg_Fare_Q2_1993,check.adj.93, Adjusted_Avg_Fare_Q2_2003, check.adj.03, Adjusted_Avg_Fare_Q2_2013, check.adj.13, Adjusted_Avg_Fare_Q2_2023, check.adj.23)%>% 
+  slice(1:5)
+   
+
+# Results
+trx %>% 
+  filter(Airport== "LAX"| Airport== "BOS") %>% 
+  select(Airport, Pass_Rank_2023, Pass_Rank_2013, Pass_Rank_2003, PassRank_1993) 
+  
+
+names(trx)[names(trx) == "State Name"] <- "State"
+west <- trx %>%
+  filter(State=="CA"|State=="AK"|State=="WA"|State=="ID"|State=="OR"|State=="NV"|State=="UT")
+
+west %>%
+  ggplot()+
+  geom_point(mapping = aes(x = Pass_Rank_2003 , y = Adjusted_Avg_Fare_Q2_2003, color = "2003")) +
+  geom_smooth(mapping = aes(x = Pass_Rank_2003 , y = Adjusted_Avg_Fare_Q2_2003, color = "2003"), method = "lm")+
+  geom_point(mapping = aes(x = Pass_Rank_2013 , y = Adjusted_Avg_Fare_Q2_2013, color = "2013" )) +
+  geom_smooth(mapping = aes(x = Pass_Rank_2013 , y = Adjusted_Avg_Fare_Q2_2013, color = "2013"), method = "lm")+
+  theme(axis.text.x = element_text(angle = 90)) +
+  labs(title = "Trend of Inflation Adjusted Fare vs Passenger Rank of Western US Airports in 2003")+
+  geom_point(mapping = aes(x = PassRank_1993 , y = Adjusted_Avg_Fare_Q2_1993, color = "1993")) +
+  geom_smooth(mapping = aes(x = PassRank_1993 , y = Adjusted_Avg_Fare_Q2_1993, color = "1993"), method = "lm")+
+  geom_point(mapping = aes(x = Pass_Rank_2023 , y = Adjusted_Avg_Fare_Q2_2023, color = "2023")) +
+  geom_smooth(mapping = aes(x = Pass_Rank_2023 , y = Adjusted_Avg_Fare_Q2_2023, color = "2023"), method = "lm")+
+  xlab(label = "Passenger Rank") +
+  ylab(label = "Inflation Adjusted Average Fare")+
+  scale_color_manual(name="legend",values = c("blue","yellow","pink","red"))
+
+  
+
+
+
+
+east <- trx %>%
+  filter(State=="NY"|State=="PA"|State=="MD"|State=="DE"|State=="NJ"|State=="CT"|State=="RI"|State=="VT"|State=="MA"|State=="NH"|State=="ME")
+
+east %>%
+  ggplot()+
+  geom_point(mapping = aes(x = Pass_Rank_2003 , y = Adjusted_Avg_Fare_Q2_2003, color = "2003")) +
+  geom_smooth(mapping = aes(x = Pass_Rank_2003 , y = Adjusted_Avg_Fare_Q2_2003, color = "2003"), method = "lm")+
+  geom_point(mapping = aes(x = Pass_Rank_2013 , y = Adjusted_Avg_Fare_Q2_2013, color = "2013" )) +
+  geom_smooth(mapping = aes(x = Pass_Rank_2013 , y = Adjusted_Avg_Fare_Q2_2013, color = "2013"), method = "lm")+
+  theme(axis.text.x = element_text(angle = 90)) +
+  labs(title = "Trend of Inflation Adjusted Fare vs Passenger Rank of Western US Airports in 2003")+
+  geom_point(mapping = aes(x = PassRank_1993 , y = Adjusted_Avg_Fare_Q2_1993, color = "1993")) +
+  geom_smooth(mapping = aes(x = PassRank_1993 , y = Adjusted_Avg_Fare_Q2_1993, color = "1993"), method = "lm")+
+  geom_point(mapping = aes(x = Pass_Rank_2023 , y = Adjusted_Avg_Fare_Q2_2023, color = "2023")) +
+  geom_smooth(mapping = aes(x = Pass_Rank_2023 , y = Adjusted_Avg_Fare_Q2_2023, color = "2023"), method = "lm")+
+  xlab(label = "Passenger Rank") +
+  ylab(label = "Inflation Adjusted Average Fare")+
+  scale_color_manual(name="legend",values = c("blue","yellow","pink","red"))
+
+LAX.BOS<-trx %>% 
+  filter(Airport== "LAX"|Airport== "BOS") %>% 
+  select(Airport, Adjusted_Avg_Fare_Q2_1993,Adjusted_Avg_Fare_Q2_2003,Adjusted_Avg_Fare_Q2_2013,Adjusted_Avg_Fare_Q2_2023, Avg_1993, Avg_2003, Avg_2013, Avg_2023,Pass_Rank_2023, Pass_Rank_2013, Pass_Rank_2003, PassRank_1993)
+
+LAX.BOS %>% 
+  ggplot()+
+  geom_bar(aes(y=Avg_1993, x = Airport), stat= "identity", fill = "blue")+
+  xlab(label = "Airport") +
+  ylab(label = "Unadjusted Average Fare 1993")
+
+LAX.BOS %>% 
+  ggplot()+
+  geom_bar(aes(y=Avg_2003, x = Airport), stat= "identity", fill = "yellow")+
+  xlab(label = "Airport") +
+  ylab(label = "Unadjusted Average Fare 2003")
+
+LAX.BOS %>% 
+  ggplot()+
+  geom_bar(aes(y=Avg_2013, x = Airport), stat= "identity", fill = "pink")+
+  xlab(label = "Airport") +
+  ylab(label = "Unadjusted Average Fare 2013")
+
+LAX.BOS %>% 
+  ggplot()+
+  geom_bar(aes(y=Avg_2023, x = Airport), stat= "identity", fill = "red")+
+  xlab(label = "Airport") +
+  ylab(label = "Unadjusted Average Fare 2023")
+
+
+
+LAX.BOS<-trx %>% 
+  filter(Airport== "LAX"|Airport== "BOS") %>% 
+  select(Airport, Adjusted_Avg_Fare_Q2_1993,Adjusted_Avg_Fare_Q2_2003,Adjusted_Avg_Fare_Q2_2013,Adjusted_Avg_Fare_Q2_2023, Avg_1993, Avg_2003, Avg_2013, Avg_2023,Pass_Rank_2023, Pass_Rank_2013, Pass_Rank_2003, PassRank_1993)
+
+LAX.BOS %>% 
+  ggplot()+
+  geom_bar(aes(y=Adjusted_Avg_Fare_Q2_1993, x = Airport), stat= "identity", fill = "blue")+
+  xlab(label = "Airport") +
+  ylab(label = "Inflation Adjusted Average Fare 1993")
+
+LAX.BOS %>% 
+  ggplot()+
+  geom_bar(aes(y=Adjusted_Avg_Fare_Q2_2003, x = Airport), stat= "identity", fill = "yellow")+
+  xlab(label = "Airport") +
+  ylab(label = "Inflation Adjusted Average Fare 2003")
+
+LAX.BOS %>% 
+  ggplot()+
+  geom_bar(aes(y=Adjusted_Avg_Fare_Q2_2013, x = Airport), stat= "identity", fill = "pink")+
+  xlab(label = "Airport") +
+  ylab(label = "Inflation Adjusted Average Fare 2013")
+
+LAX.BOS %>% 
+  ggplot()+
+  geom_bar(aes(y=Adjusted_Avg_Fare_Q2_2023, x = Airport), stat= "identity", fill = "red")+
+  xlab(label = "Airport") +
+  ylab(label = "Inflation Adjusted Average Fare 2023")
+  
+  
+
+
+
+LAX.BOS <- LAX.BOS %>% 
+  mutate(
+    comp_fare = Adjusted_Avg_Fare_Q2_1993 - Adjusted_Avg_Fare_Q2_2023)
+
+LAX.BOS %>% 
+  select(Airport, comp_fare)
+
+278.577	+ 369.449	
+
+library(leaflet)
+library(devtools)
+library(leaflet)
+library(magrittr)
+
+trx<-trx %>% 
+  arrange(desc(Avg_2023))
+
+max <- trx %>%
+  select(Avg_2023, lat, lon, Airport) %>%
+  filter(row_number() == 1)
+
+min <- trx %>%
+  select(Avg_2023, lat, lon, Airport) %>%
+  filter(row_number() == 369)
+
+leaflet() %>% 
+  addProviderTiles('CartoDB.Positron') %>% 
+  addCircles(
+    data = min,
+    lat = ~lat, lng = ~lon, popup = "Min Avg Fare.",
+    opacity = 1, fillOpacity = 1, radius = 400, color = "blue"
+  ) %>%
+  addCircles(
+    data = max,
+    lat = ~lat, lng = ~lon, popup = "Max Avg Fare.",
+    opacity=1, fillOpacity=1, radius = 400, color = "red")
+```
+
+```{r}
+
+max
+
+min
+```
+
+The most expensive Airport to Fly out of in 2023 is Central Business District in Alaska.
+
+The least expensive to fly out of is Santa Maria Public Airport in Santa Barbara.

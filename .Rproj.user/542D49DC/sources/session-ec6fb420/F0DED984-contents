@@ -1,0 +1,22 @@
+project:
+  type: website
+
+website:
+  title: "AO_Final_Project"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - Map.qmd
+      - text: "Download the Report"
+        file: Report.qmd
+        
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+
+editor: visual
+
