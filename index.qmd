@@ -10,11 +10,11 @@ code-fold: true
 
 # INVESTIGATION
 
-Full report can be accessed with [this link](https://docs.google.com/document/d/1_Ygh_oVOJOk_on2GcsdoyUcpb-Cj7eJj51bMxuyIQ9M/edit?usp=sharing). click above "Download the Report" tab for direct download.
+Full report can be accessed with [this link](https://docs.google.com/document/d/1_Ygh_oVOJOk_on2GcsdoyUcpb-Cj7eJj51bMxuyIQ9M/edit). click above "Download the Report" tab for direct download.
 
 ## Background:
 
-Today's political, economic, and social climate seems to be, on a good day, a succession of inconveniences, and on the worst of days, a never-ending cascade of unprecedented challenges and horrors. Especially thanks to recent economic inflation, everyday necessities are taking a greater and greater toll on the average consumer's wallet. Via the consumer price index (CPI) (NBC news, 2023), the overall costs of food, gas and shelter increased significantly over the summer. This increase was certainly felt acutely here in Los Angeles, where gas rose as high as \$6 in some areas, and food prices continued to climb. Purchasing my airfare home this year, I felt the sting on my wallet particularly severely, and I found myself wondering "were airplane tickets always this high?". I am not inexperienced in air travel, having flown frequently prior to college for athletics, during undergrad, and now as an adult to visit family. For some reason, when I think back to purchasing my tickets in the past, I cannot recall feeling the same unenthusiastic and reluctant resignation that I felt this year. For this reason, I thought it would be an interesting investigation to answer the following question; "How has airfare changes in the past few decades". The present report aims to do exactly this, using the United States Bureau of Transportation Statistics (BTS) data on airfare.
+Today's political, economic, and social climate seems to be, on a good day, a succession of inconveniences, and on the worst of days, a never-ending cascade of unprecedented challenges and horrors. Especially thanks to recent economic inflation, everyday necessities are taking a greater and greater toll on the average consumer's wallet. Via the consumer price index (CPI) (NBC news, 2023), the overall costs of food, gas and shelter increased significantly over the summer. This increase was certainly felt acutely here in Los Angeles, where gas rose as high as \$6/gallon in some areas, and food prices continued to climb. Purchasing my airfare home this year, I felt the sting on my wallet particularly severely, and I found myself wondering "were airplane tickets always this high?". I am not inexperienced in air travel, having flown frequently prior to college for athletics, during undergrad, and now as an adult to visit family. For some reason, when I think back to purchasing my tickets in the past, I cannot recall feeling the same unenthusiastic and reluctant resignation that I felt this year. For this reason, I thought it would be an interesting investigation to answer the following question; "How has airfare changes in the past few decades?". The present report aims to do exactly this, using the United States Bureau of Transportation Statistics (BTS) data on airfare.
 
 ```{r, include=FALSE}
 
@@ -78,7 +78,7 @@ Extra: What would be the most expensive airport to fly out of in 2023? What woul
 
 ## [About Dataset]{.underline}
 
-The following analysis was conducted using the United States Bureau of Transportation Statistic's (BTS) record of Average Domestic Itinerary Fares. The dataset compiles average flight fares by airport by year, and ranks these fares by a variable called "2022 Passenger Rank". "Passenger Rank" is an ordinal variable calculated by comparing the value equivalent to 10% of all passengers served in 2022 (a variable also included in each dataset).
+The following analysis was conducted using the United States Bureau of Transportation Statistic's (BTS) record of Average Domestic Itinerary Fares. The dataset tabulates average flight fares by airport per quarter, and ranks these fares by a variable called "2022 Passenger Rank", an ordinal variable calculated by comparing the value equivalent to 10% of all passengers served in 2022 (a variable also included in each dataset).
 
 ### Source:
 
@@ -133,11 +133,9 @@ summary(set2)
 
 ## [Methods]{.underline}
 
-Due to the data limitations for the current financial year, data from the second financial quarter of 4 years, 1993, 2003, 2013, and 2023 was utilized for analysis. A 10 year spread was thought to be ideal for assessing the general trends in airfare data. The datasets from this chosen time frames were downloaded directly from the Transportation Bureau's website, using the above link, into .csv files.
+The following analysis was conducted using the United States Bureau of Transportation Statistic's (BTS) record of Average Domestic Itinerary Fares. This dataset is compiled each financial quarter (Q1-Q4), and the most recent financial quarter data available is from Q2 of 2023. For each quarter, the dataset compiles average flight fares by airport. Included for each airport was a variable called '2022 Passengers', which compares the number of domestic passengers each airport saw for that time period to the number of passengers the same airport sees on average in the year 2022. This variable was used to calculate another variable "2022 Passenger Rank", assigns an ordinal rank to each airport by comparing the value equivalent to 10% of all passengers served in 2022.
 
-Most of the data processing and cleaning was done using the dplyr, tidyverse and baseR packages. As part of data processing, variables names were altered to aid in the coding process. As part of data processing, variables names were altered to aid in the coding process. Variable types were changed to the appropriate type (numeric or character).
-
-[Missing Values]{.underline}: Included in each dataset was '2022 Passengers', a variable which compares the amount of domestic passengers each airport sees in 2022. A missing value or a value of 0 indicate these airports don't provide commercial domestic flights, so entries with these values were removed since they would not be airports the consumer is choosing from.
+[Missing Values]{.underline}: The dataset did not have missing values for average fares, however, it did have values of 0 or 1 for the variable "2022 Passenger Rank". A missing value or a value of 0 for "2022 Passenger Rank" indicates that these airports don't provide commercial domestic flights, so entries with these values were removed (since they would not be airports the consumer is choosing from)
 
 ```{r, include=FALSE}
 
