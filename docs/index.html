@@ -110,7 +110,10 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#investigation" id="toc-investigation" class="nav-link active" data-scroll-target="#investigation">INVESTIGATION</a></li>
+  <li><a href="#investigation" id="toc-investigation" class="nav-link active" data-scroll-target="#investigation">INVESTIGATION</a>
+  <ul class="collapse">
+  <li><a href="#background" id="toc-background" class="nav-link" data-scroll-target="#background">Background:</a></li>
+  </ul></li>
   <li><a href="#research-question-am-i-really-paying-more-to-fly-home-for-thanksgiving-than-anyone-ever-has-before" id="toc-research-question-am-i-really-paying-more-to-fly-home-for-thanksgiving-than-anyone-ever-has-before" class="nav-link" data-scroll-target="#research-question-am-i-really-paying-more-to-fly-home-for-thanksgiving-than-anyone-ever-has-before">Research Question: Am I really paying more to fly home for thanksgiving than anyone ever has before?</a>
   <ul class="collapse">
   <li><a href="#about-dataset" id="toc-about-dataset" class="nav-link" data-scroll-target="#about-dataset"><u>About Dataset</u></a>
@@ -165,6 +168,10 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="investigation" class="level1">
 <h1>INVESTIGATION</h1>
+<section id="background" class="level2">
+<h2 class="anchored" data-anchor-id="background">Background:</h2>
+<p>Today’s political, economic, and social climate seems to be, on a good day, a succession of inconveniences, and at worst, a never-ending cascade of unprecedented challenges and horrors. Especially thanks to recent economic inflation, everyday necessities are taking a greater and greater toll on the average consumer’s wallet. The overall cost of food, gas and shelter experienced an increase over the summer, measured via the consumer price index (CPI) (NBC news, 2023). This increase was certainly felt acutely here in Los Angeles, where gas rose as high as $6 in some areas, and food prices continued to climb. Purchasing my airfare home this year, I felt the sting on my wallet, and I found myself wondering “were airplane tickets always this high?”. I am not inexperienced in air travel, having flown frequently prior to college for athletics, as well as during undergrad and now as an adult to visit family. For some reason, when I think back to purchasing in the past, I cannot conjure up the same feelings of unenthusiastic and reluctant resignation that I felt this year. For this reason, I thought it would be an interesting investigation; “How has airfare changes in the past few decades”. The present report aims do answer this very question, using the United States Bureau of Transportation Statistics (BTS) data on airfare to analyze trends in airfare throughout the past few decades.</p>
+</section>
 </section>
 <section id="research-question-am-i-really-paying-more-to-fly-home-for-thanksgiving-than-anyone-ever-has-before" class="level1">
 <h1>Research Question: Am I really paying more to fly home for thanksgiving than anyone ever has before?</h1>
@@ -278,9 +285,9 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="methods"><u>Methods</u></h2>
 <p>Due to the data limitations for the current financial year, data from the second financial quarter of 4 years, 1993, 2003, 2013, and 2023 was utilized for analysis. A 10 year spread was thought to be ideal for assessing the general trends in airfare data. The datasets from this chosen time frames were downloaded directly from the Transportation Bureau’s website, using the above link, into .csv filed.</p>
 <p>As part of data processing, variables names were altered to aid in the coding process. Variable types were changed to the appropriate type (continuous or character).</p>
-<p><u>Missing Values</u>: Included in each dataset was ‘2022 Passengers’, a variable which compares the amount of domestic passengers each airport sees in 2022. A missing value or a value of 0 indicate these airports don’t provide commercial domestic flights, so I’m removing missing values and values of 0 because the corresponding airports wouldn’t be ones I would fly from.</p>
+<p><u>Missing Values</u>: Included in each dataset was ‘2022 Passengers’, a variable which compares the amount of domestic passengers each airport sees in 2022. A missing value or a value of 0 indicate these airports don’t provide commercial domestic flights, so entries with these values were removed since they would not be airports the consumer is choosing from.</p>
 <p><u>Coordinate data</u>: For the purpose of additional analysis, coordinate data was taken from <a href="https://data.humdata.org/dataset/ourairports-usa?">The Humanitarian Data Exchange</a> which compiled a dataset of longitude and latitude values for 508 major US airports. This coordinate dataset was merged with the BTS datasets.</p>
-<p><u>Validation</u>: Cross-validation was done by comparing the inflation adjusted fare variable for each year (Adjusted_Avg_Fare_Q2) provided originally with my dataset with an actual dollar to dollar conversion between that year and 2023.</p>
+<p><u>Validation</u>: Cross-validation was done by comparing the inflation adjusted fare variable for each year (Adjusted_Avg_Fare_Q2) provided originally with my dataset with an dollar to dollar conversion between that year and 2023.</p>
 <p>Conversions:</p>
 <p>1993: 1-&gt;2.13</p>
 <p>2003: 1-&gt;1.67</p>
@@ -392,7 +399,7 @@ ul.task-list li input[type="checkbox"] {
 <p><img src="index_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>As the Passenger Rank decreases, broadly speaking so does the cost of the average inflation adjusted flight there in the West. Additionally, compared to previous years, 2023 fares range lower than the fares from the years prior, excluding a few outliers in the lower passenger rank region of the graph.</p>
+<p>As the Passenger Rank decreases, broadly speaking so does the cost of the average inflation adjusted flight in the West. Additionally, compared to previous years, 2023 fares range lower than the fares from the years prior, excluding a few outliers in the lower passenger rank region of the graph.</p>
 </section>
 <section id="passenger-rank-vs-inflation-adjusted-fare-in-the-east" class="level3">
 <h3 class="anchored" data-anchor-id="passenger-rank-vs-inflation-adjusted-fare-in-the-east">Passenger Rank vs Inflation Adjusted fare in the East</h3>
@@ -428,13 +435,12 @@ ul.task-list li input[type="checkbox"] {
 <pre><code>[1] 648.026</code></pre>
 </div>
 </div>
-<p>It looks like on average, I would be paying $648 more for a round trip in 1993 when comparing inflation adjusted rates. So it looks like, at least comparing the years that I did, I actually have it better off with what I pay now compared to what I would be paying in 1993.</p>
-<p>This is however limited scope–&gt; I only looked at one quarter and across 4 interrupted time points.</p>
+<p>On average, I would be paying $648 more for a round trip in 1993 when comparing inflation adjusted rates. So it looks like, at least comparing the years that I did, I actually have it better off with what I pay now compared to what I would be paying in 1993.</p>
 </section>
 </section>
 <section id="conclusion" class="level2">
 <h2 class="anchored" data-anchor-id="conclusion"><u>Conclusion</u></h2>
-<p>It looks like if we’re just looking at the dollar amount, yes I spend slightly more in 2023 than what people spent for the average round trip from BOS to LAX in previous years, primarily thanks to the rising cost of a ticket out of LAX. However, in inflation adjusted dollars (which is more relevant, even though it doesn’t feel any better) I am actually spending less. <u>So in conclusion, I am <strong>not</strong> spending more in relative 2023 dollars than anyone else has every spent before for a round trip between LAX and Boston.</u></p>
+<p>It looks like if we’re just looking at the dollar amount, yes I spend slightly more in 2023 than what people spent for the average round trip from BOS to LAX in previous years, primarily thanks to the rising cost of a ticket out of LAX. However, in inflation adjusted dollars (which is more relevant, even though it doesn’t feel any better) I am actually spending less. <u>So in conclusion, I am <strong>not</strong> spending more in relative 2023 dollars than anyone else has every spent before for a round trip between LAX and Boston.</u> The above study does have significant limitations, namely that limitations in man-power limit our analysis to 4 timepoints separated by a decade. Due to this, this analysis definitely misses more acute variation in the dataset, and additionally does not account for the remaining financial quarters of the year. However, limited though it may be, it does provide a bit of assurance to those of us purchasing airfare.</p>
 </section>
 <section id="cost-map" class="level2">
 <h2 class="anchored" data-anchor-id="cost-map">Cost Map</h2>
